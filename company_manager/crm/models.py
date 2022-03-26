@@ -8,24 +8,25 @@ class Address(models.Model):
     city = models.CharField(max_length=100, blank=True, null=True)
 
 
-class Account(models.Model):
+class Company(models.Model):
     status_choices = (
-        ("A", "Account"),
+        ("N", "New"),
         ("L", "Lead"),
         ("O", "Opportunity"),
         ("C", "Active Customer"),
         ("FC", "Former Customer"),
-        ("I", "Inactive Account"),
+        ("I", "Inactive"),
     )
+    name = models.CharField(max_length=20)
     status = models.CharField(max_length=2, default="A", choices=status_choices)
-    phone_number = models.CharField(max_length=20)
-    email = models.CharField(max_length=50)
+    phone_number = models.CharField(max_length=20, null=True, blank=True)
+    email = models.CharField(max_length=50, null=True, blank=True)
     identification_number = models.CharField(max_length=100)
     address = models.ForeignKey(Address, on_delete=models.SET_NULL, null=True)
 
 
 class Contact(models.Model):
-    primary_account = models.ForeignKey(Account, on_delete=models.SET_NULL, null=True)
+    primary_company = models.ForeignKey(Company, on_delete=models.SET_NULL, null=True)
     first_name = models.CharField(max_length=100)
     last_name = models.CharField(max_length=100)
     phone_number = models.CharField(max_length=20)
@@ -42,7 +43,7 @@ class Opportunity(models.Model):
         ("0", "Closed Lost"),
     )
 
-    account = models.ForeignKey(Account, on_delete=models.RESTRICT)
+    company = models.ForeignKey(Company, on_delete=models.RESTRICT)
     sales_manager = models.ForeignKey(User, on_delete=models.RESTRICT)
     primary_contact = models.ForeignKey(Contact, on_delete=models.SET_NULL, null=True)
     description = models.TextField(null=True)
